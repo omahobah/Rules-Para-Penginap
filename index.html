@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aturan Menginap Kantor</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #F0F4F8;
+    --surface:  #FFFFFF;
+    --navy:     #1B2B4B;
+    --teal:     #2D8F7B;
+    --teal-lt:  #E6F4F1;
+    --amber:    #E8A020;
+    --amber-lt: #FEF6E4;
+    --rose:     #D95F5F;
+    --rose-lt:  #FDEAEA;
+    --blue:     #3B6FD4;
+    --blue-lt:  #EBF0FB;
+    --purple:   #7B52C4;
+    --purple-lt:#F0EAFA;
+    --green:    #3A9E5F;
+    --green-lt: #E8F6EE;
+    --muted:    #6B7A8F;
+    --border:   #DDE3EC;
+    --text:     #2C3748;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    color: #fff;
+    padding: 40px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, #2D5FA0 0%, transparent 70%);
+  }
+  .hero-badge {
+    position: relative;
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    margin-bottom: 14px;
+    color: #A8C8FF;
+  }
+  .hero h1 {
+    position: relative;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: #6BC8B0; }
+  .hero p {
+    position: relative;
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    max-width: 380px;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat .num {
+    font-size: 24px;
+    font-weight: 800;
+    color: #6BC8B0;
+    display: block;
+  }
+  .hero-stat .lbl {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    padding: 20px 16px 0;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    gap: 10px;
+    transition: border-color .2s;
+  }
+  .search-box:focus-within { border-color: var(--teal); }
+  .search-box svg { flex-shrink: 0; color: var(--muted); }
+  .search-box input {
+    border: none; outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    width: 100%;
+    color: var(--text);
+    background: transparent;
+  }
+  .search-box input::placeholder { color: #B0B8C6; }
+
+  /* ── TAB NAV ── */
+  .tab-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 16px 16px 0;
+    max-width: 680px;
+    margin: 0 auto;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab-btn .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .4;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    color: var(--navy);
+    border-color: transparent;
+    box-shadow: 0 1px 6px rgba(0,0,0,.08);
+  }
+  .tab-btn[data-area="all"].active     { background: var(--navy); color: #fff; }
+  .tab-btn[data-area="ruang-kerja"].active   { background: var(--blue-lt); color: var(--blue); border-color: var(--blue); }
+  .tab-btn[data-area="halaman"].active  { background: var(--green-lt); color: var(--green); border-color: var(--green); }
+  .tab-btn[data-area="kamar-mandi"].active { background: var(--teal-lt); color: var(--teal); border-color: var(--teal); }
+  .tab-btn[data-area="dapur"].active    { background: var(--amber-lt); color: var(--amber); border-color: var(--amber); }
+  .tab-btn[data-area="kamar"].active    { background: var(--purple-lt); color: var(--purple); border-color: var(--purple); }
+  .tab-btn[data-area="gudang"].active   { background: var(--rose-lt); color: var(--rose); border-color: var(--rose); }
+  .tab-btn[data-area="gym"].active      { background: #FFF0E6; color: #C05A1A; border-color: #C05A1A; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 20px 16px 0;
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    transition: transform .15s;
+  }
+  .section-card:hover { transform: translateY(-1px); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .section-info { flex: 1; }
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .section-count {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .chevron {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .25s;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .section-card.open .chevron { transform: rotate(180deg); }
+
+  .rules-list {
+    display: none;
+    padding: 0 18px 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .section-card.open .rules-list { display: flex; }
+
+  .rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--bg);
+    transition: background .15s;
+  }
+  .rule-item:hover { background: #E8EDF4; }
+  .rule-icon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rule-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .rule-text strong { color: var(--navy); font-weight: 600; }
+
+  /* area color themes */
+  .theme-blue   .section-icon { background: var(--blue-lt); }
+  .theme-blue   .section-title { color: var(--blue); }
+  .theme-blue   .rule-icon { background: var(--blue-lt); color: var(--blue); }
+  .theme-blue   .chevron { background: var(--blue-lt); color: var(--blue); }
+
+  .theme-green  .section-icon { background: var(--green-lt); }
+  .theme-green  .section-title { color: var(--green); }
+  .theme-green  .rule-icon { background: var(--green-lt); color: var(--green); }
+  .theme-green  .chevron { background: var(--green-lt); color: var(--green); }
+
+  .theme-teal   .section-icon { background: var(--teal-lt); }
+  .theme-teal   .section-title { color: var(--teal); }
+  .theme-teal   .rule-icon { background: var(--teal-lt); color: var(--teal); }
+  .theme-teal   .chevron { background: var(--teal-lt); color: var(--teal); }
+
+  .theme-amber  .section-icon { background: var(--amber-lt); }
+  .theme-amber  .section-title { color: var(--amber); }
+  .theme-amber  .rule-icon { background: var(--amber-lt); color: var(--amber); }
+  .theme-amber  .chevron { background: var(--amber-lt); color: var(--amber); }
+
+  .theme-purple .section-icon { background: var(--purple-lt); }
+  .theme-purple .section-title { color: var(--purple); }
+  .theme-purple .rule-icon { background: var(--purple-lt); color: var(--purple); }
+  .theme-purple .chevron { background: var(--purple-lt); color: var(--purple); }
+
+  .theme-rose   .section-icon { background: var(--rose-lt); }
+  .theme-rose   .section-title { color: var(--rose); }
+  .theme-rose   .rule-icon { background: var(--rose-lt); color: var(--rose); }
+  .theme-rose   .chevron { background: var(--rose-lt); color: var(--rose); }
+
+  .theme-orange .section-icon { background: #FFF0E6; }
+  .theme-orange .section-title { color: #C05A1A; }
+  .theme-orange .rule-icon { background: #FFF0E6; color: #C05A1A; }
+  .theme-orange .chevron { background: #FFF0E6; color: #C05A1A; }
+
+  /* divider between header & list */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 18px 14px;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--muted);
+    display: none;
+  }
+  .empty-state svg { margin-bottom: 12px; opacity: .4; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── PROGRESS BAR (checklist mode) ── */
+  .checklist-bar {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .checklist-bar .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .checklist-bar .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), #56C9B0);
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+  .checklist-bar .progress-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+  .checklist-bar .toggle-check-btn {
+    border: none;
+    background: var(--teal);
+    color: #fff;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* checklist rule */
+  .section-card.checklist-mode .rule-item { cursor: pointer; }
+  .section-card.checklist-mode .rule-item.checked {
+    background: var(--green-lt);
+    opacity: .7;
+  }
+  .section-card.checklist-mode .rule-item.checked .rule-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  /* ── FOOTER ── */
+  .footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 24px;
+    padding: 0 16px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Panduan Menginap Kantor</div>
+  <h1>Aturan <span>Bersama</span><br>Penginap Kantor</h1>
+  <p>Wajib dibaca oleh seluruh penginap. Jaga kenyamanan bersama dengan mematuhi aturan di setiap area.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">7</span><span class="lbl">Area</span></div>
+    <div class="hero-stat"><span class="num" id="total-rules">46</span><span class="lbl">Aturan</span></div>
+    <div class="hero-stat"><span class="num">1</span><span class="lbl">Tujuan</span></div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search-input" type="text" placeholder="Cari aturan... (cth: lampu, dapur, kasur)">
+  </div>
+</div>
+
+<!-- CHECKLIST BAR -->
+<div class="content" style="padding-bottom:0;gap:0;">
+  <div class="checklist-bar" id="checklist-bar" style="display:none;">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-label" id="progress-label">0 / 0</span>
+    <button class="toggle-check-btn" id="reset-btn" onclick="resetChecklist()">Reset</button>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<nav class="tab-nav" id="tab-nav">
+  <button class="tab-btn active" data-area="all" onclick="filterArea('all',this)">
+    <span class="dot"></span> Semua Area
+  </button>
+  <button class="tab-btn" data-area="ruang-kerja" onclick="filterArea('ruang-kerja',this)">
+    <span class="dot"></span> Ruang Kerja
+  </button>
+  <button class="tab-btn" data-area="halaman" onclick="filterArea('halaman',this)">
+    <span class="dot"></span> Halaman
+  </button>
+  <button class="tab-btn" data-area="kamar-mandi" onclick="filterArea('kamar-mandi',this)">
+    <span class="dot"></span> Kamar Mandi
+  </button>
+  <button class="tab-btn" data-area="dapur" onclick="filterArea('dapur',this)">
+    <span class="dot"></span> Dapur
+  </button>
+  <button class="tab-btn" data-area="kamar" onclick="filterArea('kamar',this)">
+    <span class="dot"></span> Kamar
+  </button>
+  <button class="tab-btn" data-area="gudang" onclick="filterArea('gudang',this)">
+    <span class="dot"></span> Gudang
+  </button>
+  <button class="tab-btn" data-area="gym" onclick="filterArea('gym',this)">
+    <span class="dot"></span> Ruang Gym
+  </button>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="content" id="main-content">
+
+  <!-- RUANG KERJA -->
+  <div class="section-card theme-blue open" data-area="ruang-kerja">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">💼</div>
+      <div class="section-info">
+        <div class="section-title">Ruang Kerja</div>
+        <div class="section-count">12 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">💡</div><div class="rule-text">Lampu kotak dimatikan pukul <strong>21:00</strong>, digantikan 9 lampu bohlam</div></div>
+      <div class="rule-item"><div class="rule-icon">💡</div><div class="rule-text">Matikan <strong>6 lampu bohlam</strong> di jam 00.00 malam</div></div>
+      <div class="rule-item"><div class="rule-icon">🔊</div><div class="rule-text">Kondisikan volume speaker di atas <strong>jam 20:00</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">❄️</div><div class="rule-text">Penggunaan <strong>AC 3 unit</strong> dengan suhu yang sama</div></div>
+      <div class="rule-item"><div class="rule-icon">🗂️</div><div class="rule-text">Pastikan perlengkapan dan peralatan tidur tertata rapi pada tempatnya <strong>jam 07:00</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">📺</div><div class="rule-text">Sesuaikan volume TV atau game jika sudah <strong>larut malam</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🛋️</div><div class="rule-text">Sofa <strong>tidak</strong> untuk tempat tidur</div></div>
+      <div class="rule-item"><div class="rule-icon">🍽️</div><div class="rule-text"><strong>Tidak</strong> meninggalkan peralatan makan di area ruang kerja</div></div>
+      <div class="rule-item"><div class="rule-icon">☕</div><div class="rule-text">Minuman sachet hanya untuk di <strong>jam kerja</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🧊</div><div class="rule-text">Pembelian minuman botol di chiller wajib <strong>membayar ke Intan</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🪟</div><div class="rule-text">Tutup semua korden <strong>jam 18.00</strong> sesuai SOP</div></div>
+      <div class="rule-item"><div class="rule-icon">📚</div><div class="rule-text">Peminjaman buku <strong>konfirmasi ke Lina</strong></div></div>
+    </div>
+  </div>
+
+  <!-- HALAMAN -->
+  <div class="section-card theme-green open" data-area="halaman">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">🌿</div>
+      <div class="section-info">
+        <div class="section-title">Halaman Depan atau Belakang</div>
+        <div class="section-count">7 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">🌙</div><div class="rule-text">Jaga ketertiban di atas <strong>jam 22:00</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🚬</div><div class="rule-text">Pastikan asbak dalam kondisi <strong>kosong</strong> setelah digunakan</div></div>
+      <div class="rule-item"><div class="rule-icon">🔒</div><div class="rule-text">Gerbang depan terkunci di <strong>jam 11.00–12.00</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🚪</div><div class="rule-text"><strong>Tidak</strong> membukakan gerbang bagi siapapun yang datang lebih dari jam 12.00</div></div>
+      <div class="rule-item"><div class="rule-icon">💡</div><div class="rule-text">Matikan lampu depan dan belakang <strong>jam 06:00</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🪣</div><div class="rule-text">Kembalikan ember yang sudah dipakai ke tempat asalnya <strong>(gudang)</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🧹</div><div class="rule-text">Pastikan meja depan dalam kondisi <strong>bersih & rapi</strong></div></div>
+    </div>
+  </div>
+
+  <!-- KAMAR MANDI -->
+  <div class="section-card theme-teal open" data-area="kamar-mandi">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">🚿</div>
+      <div class="section-info">
+        <div class="section-title">Kamar Mandi</div>
+        <div class="section-count">5 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">🧴</div><div class="rule-text">Gunakan sabun, air dan fasilitas dengan <strong>semestinya dan secukupnya</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🧽</div><div class="rule-text">Jaga kebersihan area kamar mandi (lantai, ember, dinding, kloset, tempat sabun, rak)</div></div>
+      <div class="rule-item"><div class="rule-icon">🎒</div><div class="rule-text"><strong>Tidak</strong> meninggalkan barang pribadi di dalam kamar mandi</div></div>
+      <div class="rule-item"><div class="rule-icon">🚪</div><div class="rule-text">Tidak menutup pintu saat kamar mandi <strong>kosong</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">📅</div><div class="rule-text">Hari Minggu kebersihan kamar mandi <strong>tetap dijaga</strong></div></div>
+    </div>
+  </div>
+
+  <!-- DAPUR -->
+  <div class="section-card theme-amber open" data-area="dapur">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">🍳</div>
+      <div class="section-info">
+        <div class="section-title">Dapur</div>
+        <div class="section-count">6 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">✨</div><div class="rule-text">Pastikan dapur dalam kondisi <strong>rapi dan bersih</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🍽️</div><div class="rule-text">Cuci kembali peralatan setelah digunakan (piring, sendok, gelas, panci, wajan, dll)</div></div>
+      <div class="rule-item"><div class="rule-icon">🚰</div><div class="rule-text">Pastikan filter dan area wastafel <strong>bersih</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🎒</div><div class="rule-text"><strong>Tidak</strong> meninggalkan barang pribadi di dapur (gelas, piring, tumblr, dll)</div></div>
+      <div class="rule-item"><div class="rule-icon">👔</div><div class="rule-text">Pastikan peralatan cuci dalam kondisi <strong>bersih dan rapi</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">☕</div><div class="rule-text">Pastikan peralatan dan meja kopi dalam kondisi <strong>bersih dan rapi</strong></div></div>
+    </div>
+  </div>
+
+  <!-- KAMAR -->
+  <div class="section-card theme-purple open" data-area="kamar">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">🛏️</div>
+      <div class="section-info">
+        <div class="section-title">Kamar</div>
+        <div class="section-count">8 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">☀️</div><div class="rule-text">Jemur kasur <strong>seminggu sekali</strong> tiap hari Minggu</div></div>
+      <div class="rule-item"><div class="rule-icon">🧹</div><div class="rule-text">Kamar dibersihkan dan dirapikan <strong>tiap hari</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🛏️</div><div class="rule-text">Rapikan kasur kembali rapi <strong>seperti semula</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🪑</div><div class="rule-text">Rawat fasilitas yang disediakan (lemari, selimut, bantal, laundy bag, kasur, dll)</div></div>
+      <div class="rule-item"><div class="rule-icon">❄️</div><div class="rule-text">Matikan AC <strong>setelah selesai digunakan</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🧺</div><div class="rule-text">Sapu, pel, bersihkan langit-langit dinding, jendela <strong>setiap hari</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">💡</div><div class="rule-text">Matikan lampu <strong>saat tidak digunakan</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🌸</div><div class="rule-text">Pastikan pengharum ruangan <strong>berfungsi</strong></div></div>
+    </div>
+  </div>
+
+  <!-- GUDANG -->
+  <div class="section-card theme-rose open" data-area="gudang">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">📦</div>
+      <div class="section-info">
+        <div class="section-title">Gudang</div>
+        <div class="section-count">3 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">🔄</div><div class="rule-text">Pastikan barang yang telah dipakai <strong>dirapikan kembali</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🍳</div><div class="rule-text"><strong>Tidak</strong> meletakkan panci kotor magicom di rak gudang</div></div>
+      <div class="rule-item"><div class="rule-icon">🌾</div><div class="rule-text">Pastikan beras <strong>tidak berserakan</strong></div></div>
+    </div>
+  </div>
+
+  <!-- GYM -->
+  <div class="section-card theme-orange open" data-area="gym">
+    <div class="section-header" onclick="toggleCard(this.parentElement)">
+      <div class="section-icon">🏋️</div>
+      <div class="section-info">
+        <div class="section-title">Ruang Gym</div>
+        <div class="section-count">4 aturan</div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="rules-list">
+      <div class="rule-item"><div class="rule-icon">🚫</div><div class="rule-text">Ruang gym <strong>tidak untuk tidur</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🎒</div><div class="rule-text"><strong>Tidak</strong> ada barang pribadi di ruang Gym</div></div>
+      <div class="rule-item"><div class="rule-icon">✨</div><div class="rule-text">Pastikan kerapian ruang gym <strong>setelah digunakan</strong></div></div>
+      <div class="rule-item"><div class="rule-icon">🛏️</div><div class="rule-text"><strong>Tidak</strong> ada kasur/bantal di ruang gym</div></div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" id="empty-state">
+    <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <p>Tidak ada aturan yang cocok dengan pencarian kamu.</p>
+  </div>
+
+  <p class="footer-note">📋 Diperbarui oleh manajemen · Berlaku untuk seluruh penginap · Harap dibaca dengan seksama</p>
+</main>
+
+<script>
+  // ── Toggle card open/close ──
+  function toggleCard(card) {
+    card.classList.toggle('open');
+  }
+
+  // ── Filter by area ──
+  function filterArea(area, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cards = document.querySelectorAll('.section-card');
+    cards.forEach(card => {
+      if (area === 'all' || card.dataset.area === area) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    checkEmpty();
+  }
+
+  // ── Search ──
+  const searchInput = document.getElementById('search-input');
+  searchInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.section-card');
+
+    // reset tab
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-area="all"]').classList.add('active');
+
+    if (!q) {
+      cards.forEach(card => {
+        card.style.display = '';
+        card.querySelectorAll('.rule-item').forEach(r => r.style.display = '');
+      });
+      checkEmpty();
+      return;
+    }
+
+    cards.forEach(card => {
+      const items = card.querySelectorAll('.rule-item');
+      let anyMatch = false;
+      items.forEach(item => {
+        const txt = item.textContent.toLowerCase();
+        if (txt.includes(q)) {
+          item.style.display = '';
+          anyMatch = true;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      card.style.display = anyMatch ? '' : 'none';
+      if (anyMatch) card.classList.add('open');
+    });
+    checkEmpty();
+  });
+
+  function checkEmpty() {
+    const visible = [...document.querySelectorAll('.section-card')].filter(c => c.style.display !== 'none');
+    document.getElementById('empty-state').style.display = visible.length === 0 ? 'block' : 'none';
+  }
+
+  // ── Checklist mode (long press title) ──
+  let checklistMode = false;
+  let totalRules = document.querySelectorAll('.rule-item').length;
+  document.getElementById('total-rules').textContent = totalRules;
+
+  document.querySelectorAll('.rule-item').forEach(item => {
+    item.addEventListener('click', function() {
+      if (!checklistMode) return;
+      this.classList.toggle('checked');
+      updateProgress();
+    });
+  });
+
+  // Enable checklist on double-tap hero
+  document.querySelector('.hero').addEventListener('dblclick', function() {
+    checklistMode = !checklistMode;
+    document.querySelectorAll('.section-card').forEach(c => {
+      if (checklistMode) c.classList.add('checklist-mode');
+      else c.classList.remove('checklist-mode');
+    });
+    const bar = document.getElementById('checklist-bar');
+    bar.style.display = checklistMode ? 'flex' : 'none';
+    if (checklistMode) updateProgress();
+  });
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.rule-item');
+    const checked = document.querySelectorAll('.rule-item.checked');
+    const pct = Math.round((checked.length / all.length) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = checked.length + ' / ' + all.length;
+  }
+
+  function resetChecklist() {
+    document.querySelectorAll('.rule-item').forEach(i => i.classList.remove('checked'));
+    updateProgress();
+  }
+</script>
+</body>
+</html>
